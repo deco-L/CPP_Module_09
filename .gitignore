@@ -1,0 +1,22 @@
+# 全てのファイルを無視
+*
+
+
+# .cpp, .hpp, および Makefile を除外
+!/
+!/src/
+!/include/
+!/ex*/
+!/**/src/
+!/**/include/
+!/.gitignore
+!**/*.cpp
+!**/*.hpp
+!**/*.csv
+!**/*.txt
+!**/Makefile
+
+# ./*.cpp, ./*.hpp, ./Makefileを無視
+/Makefile
+/*.cpp
+/*.hpp
