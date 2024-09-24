@@ -141,9 +141,9 @@ static bool existDate(std::string date, std::map<int, int> dates) {
   if (dateArray.size() != 3)
     return (false);
   if (dateArray[0] && isLeapYear(dateArray[0]))
-    dates[9] = 29;
+    dates[2] = 29;
   else
-    dates[9] = 28;
+    dates[2] = 28;
   if (dateArray[1] && gudgeMonth(dateArray[1]))
     return (false);
   if (dateArray[2] && gudgeDate(dates, dateArray[1], dateArray[2]))
