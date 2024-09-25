@@ -6,12 +6,41 @@
 /*   By: csakamot <csakamot@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 14:21:20 by csakamot          #+#    #+#             */
-/*   Updated: 2024/05/27 16:22:48 by csakamot         ###   ########.fr       */
+/*   Updated: 2024/09/26 04:10:16 by csakamot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RPN.hpp"
+#include <sstream>
 
-int main(void) {
+static bool gudgeOperator(const std::string str) {
+  return (str == "+" || str == "-" || str == "*" || str == "/");
+}
+
+int main(int argc, char** argv) {
+  RPN rpn;
+  double tmp;
+  std::string element;
+
+  if (argc != 2) {
+    std::cerr << ERRORCOLOR << "Error: Invalid arguments." << RESETCOLOR << std::endl;
+    return (EXIT_FAILURE);
+  }
+  std::istringstream lineStream(argv[1]);
+  while (std::getline(lineStream, element, ' ')) {
+    std::istringstream strToD(element);
+    strToD >> tmp;
+    if (strToD.fail() && !gudgeOperator(element)) {
+      std::cerr << ERRORCOLOR << "Error: invalid argument." << RESETCOLOR << std::endl;
+      return (EXIT_FAILURE);
+    } else if (strToD.fail() && gudgeOperator(element)) {
+      if (!rpn.calcu(element, rpn.top())) {
+        std::cerr << ERRORCOLOR << "Error: invalid argument." << RESETCOLOR << std::endl;
+        return (EXIT_FAILURE);
+      }
+    } else
+      rpn.push(tmp);
+  }
+  std::cout << SUCESCOLOR << "Result: " << RESETCOLOR << rpn.top() << std::endl;
   return (EXIT_SUCCESS);
 }
