@@ -6,7 +6,7 @@
 /*   By: csakamot <csakamot@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 14:21:20 by csakamot          #+#    #+#             */
-/*   Updated: 2024/09/26 04:09:17 by csakamot         ###   ########.fr       */
+/*   Updated: 2024/09/26 04:21:54 by csakamot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ RPN& RPN::operator=(const RPN& obj) {
     ;
   }
   else
-    std::cerr << "\e[1;31mBit Error: "
+    std::cerr << ERRORCOLOR << "Error: "
               << "Attempted self-assignment in copy assignment operator"
-              << "\e[0m"
+              << RESETCOLOR
               << std::endl;
   return(*this);
 }

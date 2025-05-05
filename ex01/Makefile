@@ -6,7 +6,7 @@
 #    By: csakamot <csakamot@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/01 14:21:20 by csakamot          #+#    #+#              #
-#    Updated: 2024/08/31 03:36:41 by csakamot         ###   ########.fr        #
+#    Updated: 2024/09/29 18:26:46 by csakamot         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ OBJS		= ${subst ${SRCDIR}, $(OBJDIR), ${SRCS:.cpp=.o}}
 ##-----------------------------##
 
 ##----------conpiler-----------##
-CC			= g++
+CC			= c++
 CFLAGS	= -Wall -Wextra -Werror -std=c++98 -fsanitize=address
 ##-----------------------------##
 
@@ -107,6 +107,34 @@ re:fclean all
 
 exe:re
 				@make -s clean
+
+test:re
+		@echo "$(GREEN)Test 1:$(NC)"
+		./$(NAME) "3 4 +"
+		@echo "$(GREEN)Test 2:$(NC)"
+		./$(NAME) "10 2 -"
+		@echo "$(GREEN)Test 3:$(NC)"
+		./$(NAME) "6 7 *"
+		@echo "$(GREEN)Test 4:$(NC)"
+		./$(NAME) "210 7 /"
+		@echo "$(GREEN)Test 5:$(NC)"
+		./$(NAME) "5 1 2 + 4 * + 3 -"
+		@echo "$(GREEN)Test 6:$(NC)"
+		./$(NAME) "3.5 2.1 + 3.2 4.7 - *"
+		@echo "$(GREEN)Test 7:$(NC)"
+		./$(NAME) "3 4 + 5 2 - *"
+		@echo "$(GREEN)Test 8:$(NC)"
+		./$(NAME) "6 2 + 5 * 3 - 4 /"
+		@echo "$(GREEN)Test 9:$(NC)"
+		./$(NAME) "7 2 3 + 4 * + 5 -"
+		@echo "$(GREEN)Test 10:$(NC)"
+		./$(NAME) "3.5 2.5 + 8 3.2 - *"
+		@echo "$(GREEN)Test 11:$(NC)"
+		./$(NAME) "9 4 - 6 2 + * 3 + 7 /"
+		@echo "$(GREEN)Test 12:$(NC)"
+		./$(NAME) "3 4 + 5000 1020 * * 3 /"
+		@echo "$(GREEN)Test 13:$(NC)"
+		./$(NAME) "1.3e-2 4.5e-3 + 3.2e-1 4.7e-2 - *"
 
 .PHONY:all clean fclean re exe
 ##-----------------------------##

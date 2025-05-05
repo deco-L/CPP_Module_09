@@ -35,7 +35,7 @@ OBJS		= ${subst ${SRCDIR}, $(OBJDIR), ${SRCS:.cpp=.o}}
 ##-----------------------------##
 
 ##----------conpiler-----------##
-CC			= g++
+CC			= c++
 CFLAGS	= -Wall -Wextra -Werror -std=c++98 -fsanitize=address
 ##-----------------------------##
 
