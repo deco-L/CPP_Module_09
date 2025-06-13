@@ -17,13 +17,18 @@
 #define ERRORCOLOR "\033[1;38;5;196m"
 #define RESETCOLOR "\033[0m"
 
+#include <sys/ioctl.h>
+#include <ctime>
+#include <unistd.h>
 #include <cstdlib>
 #include <cerrno>
 #include <climits>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <list>
+#include <iterator>
 #include <algorithm>
 
 struct IndexedValue {
@@ -49,31 +54,42 @@ private:
   PmergeMe& operator=(const PmergeMe& obj);
   ~PmergeMe();
 
-  static std::vector<unsigned long> makeJacobsthalSequence(unsigned long size);
-  static std::vector<std::pair<IndexedValue, IndexedValue> > makePairs(const std::vector<IndexedValue>& indexedValue);
+  static std::vector<unsigned long> makeJacobsthalVector(unsigned long size);
+  static std::list<unsigned long> makeJacobsthalList(unsigned long size);
+  static std::vector<std::pair<IndexedValue, IndexedValue> > makePairs(const std::vector<IndexedValue>& indexedArray);
+  static std::list<std::pair<IndexedValue, IndexedValue> > makePairs(const std::list<IndexedValue>& indexedArray);
   static void sortPair(std::pair<IndexedValue, IndexedValue>& pair, size_t& comparisonCount);
   static void sortPair(std::vector<IndexedValue>& pair, size_t& comparisonCount);
+  static void sortPair(std::list<IndexedValue>& pair, size_t& compairisonCount);
   static std::vector<std::pair<IndexedValue, IndexedValue> >::iterator searchPairValue(const size_t& index, const std::vector<IndexedValue>& array, std::vector<std::pair<IndexedValue, IndexedValue> >& pairArray);
+  static std::list<std::pair<IndexedValue, IndexedValue> >::iterator searchPairValue(const size_t& index, const std::list<IndexedValue>& array, std::list<std::pair<IndexedValue, IndexedValue> >& pairArray);
   static std::vector<IndexedValue>::iterator searchValue(std::vector<IndexedValue>& array, const size_t& index);
+  static std::list<IndexedValue>::iterator searchValue(std::list<IndexedValue>& array, const size_t& index);
   static void insertValue(std::vector<IndexedValue>& array, std::vector<IndexedValue>::iterator position, std::vector<std::pair<IndexedValue, IndexedValue> >::iterator it);
+  static void insertValue(std::list<IndexedValue>& array, std::list<IndexedValue>::iterator position, std::list<std::pair<IndexedValue, IndexedValue> >::iterator it);
   static void mergeInsert(std::vector<IndexedValue>& array, std::vector<std::pair<IndexedValue, IndexedValue> >& pairArray, size_t& comparisonCount);
+  static void mergeInsert(std::list<IndexedValue>& array, std::list<std::pair<IndexedValue, IndexedValue> >& pairArray, size_t& comparisonCount);
 
 public:
+  static std::vector<IndexedValue> fordJohnsonAlgorithm(std::vector<IndexedValue> indexedArray, size_t& comparisonCount);
+  static std::list<IndexedValue> fordJohnsonAlgorithm(std::list<IndexedValue>& indexedArray, size_t& comparisonCount);
+
   template <typename T>
-  static void display_array(const T& array) {
+  static void displayArray(const T& array) {
+    size_t index = 0;
+
     for (typename T::const_iterator it = array.begin(); it != array.end(); ++it) {
       if (it != array.begin())
         std::cout << ' ';
-      if (array.size() > 5 && it - array.begin() == 4) {
-        std::cout << "[...]";
-        return ;
-      }
+//      if (array.size() > 5 && index == 4) {
+//        std::cout << "[...]";
+//        return ;
+//      }
       std::cout << *it;
+      index++;
     }
     return ;
   }
-  static std::vector<IndexedValue> fordJohnsonAlgorithm(std::vector<IndexedValue> indexedArray, size_t& comparisonCount);
-  // static size_t ford_johnson_algorithm(std::list<unsigned long>& array);
 };
 
 #endif

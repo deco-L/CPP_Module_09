@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-#include <sys/ioctl.h>
-#include <unistd.h>
 
 namespace mylib {
   static size_t get_term_line() {
@@ -74,7 +72,10 @@ namespace mylib {
     return (true);
   }
 
-  static std::vector<unsigned long> parse_argv_to_vector(int argc, char** argv) {
+  static std::vector<unsigned long> parseArgvToVector(
+      int argc,
+      char** argv
+      ) {
     std::vector<unsigned long> array;
 
     for (int i = 1; i < argc; i++) {
@@ -115,24 +116,100 @@ namespace mylib {
     return (array);
   }
 
-  static std::vector<IndexedValue> vector_to_indexed_vector(std::vector<unsigned long>& array) {
-    std::vector<IndexedValue> indexed_vector;
+  static std::list<unsigned long> parseArgvToList(
+      int argc,
+      char** argv
+      ) {
+    std::list<unsigned long> array;
 
-    for (size_t i = 0; i < array.size(); i++) {
-      IndexedValue indexed_value(array[i], i + 1);
-      indexed_vector.push_back(indexed_value);
+    for (int i = 1; i < argc; i++) {
+      char* endptr;
+      unsigned long tmp = std::strtoul(argv[i], &endptr, 10);
+
+      if (endptr == argv[i]) {
+        return (
+          std::cerr << ERRORCOLOR << "Error: not a number."
+                    << RESETCOLOR << std::endl,
+          std::list<unsigned long>(0, 0)
+        );
+      }
+      if (argv[i][0] == '-') {
+        return (
+          std::cerr << ERRORCOLOR << "Error: negative number is not allowed."
+                    << RESETCOLOR << std::endl,
+          std::list<unsigned long>(0, 0)
+        );
+      }
+      if ((errno == ERANGE && tmp == ULONG_MAX)) {
+        return (
+          std::cerr << ERRORCOLOR << "Error: number too large."
+                    << RESETCOLOR << std::endl,
+          std::list<unsigned long>(0, 0)
+        );
+      }
+      if (*endptr != '\0') {
+        std::cerr << "Error: invalid character after number." << std::endl;
+        return (
+          std::cerr << ERRORCOLOR << "Error: invalid character after number."
+                    << RESETCOLOR << std::endl,
+          std::list<unsigned long>(0, 0)
+        );
+      }
+      array.push_back(tmp);
     }
-    return (indexed_vector);
-  }
-
-  static std::vector<unsigned long> indexedVectorToVector(const std::vector<IndexedValue>& indexed_vector) {
-    std::vector<unsigned long> array;
-
-    for (size_t i = 0; i < indexed_vector.size(); i++)
-      array.push_back(indexed_vector[i].value);
     return (array);
   }
-  // static std::list<unsigned long> parse_argv_to_list(int argc, char** argv);
+
+  static std::vector<IndexedValue> vectorToIndexedVector(
+      std::vector<unsigned long> array
+      ) {
+    std::vector<IndexedValue> indexedVector;
+
+    for (size_t i = 0; i < array.size(); i++) {
+      IndexedValue indexedValue(array[i], i + 1);
+
+      indexedVector.push_back(indexedValue);
+    }
+    return (indexedVector);
+  }
+
+  static std::list<IndexedValue> listToIndexedList(
+      std::list<unsigned long> array
+      ) {
+    std::list<IndexedValue> indexedList;
+    size_t index = 1;
+
+    for (std::list<unsigned long>::iterator it = array.begin(); it != array.end(); it++) {
+      IndexedValue indexedValue(*it, index++);
+
+      indexedList.push_back(indexedValue);
+    }
+    return (indexedList);
+  }
+
+  static std::vector<unsigned long> indexedVectorToVector(
+      const std::vector<IndexedValue>& indexedVector
+      ) {
+    std::vector<unsigned long> array;
+
+    for (size_t i = 0; i < indexedVector.size(); i++)
+      array.push_back(indexedVector[i].value);
+    return (array);
+  }
+
+  static std::list<unsigned long> indexedListToList(
+      const std::list<IndexedValue>& indexedList
+      ) {
+    std::list<unsigned long> array;
+
+    for (std::list<IndexedValue>::const_iterator it = indexedList.begin(); it != indexedList.end(); it++)
+      array.push_back(it->value);
+    return (array);
+  }
+  
+  static double calcProcessTime(std::clock_t start, std::clock_t end) {
+    return (1000000.0 * (end - start) / CLOCKS_PER_SEC);
+  }
 }
 
 int main(int argc, char** argv) {
@@ -141,19 +218,63 @@ int main(int argc, char** argv) {
     return (mylib::draw_terminal_line(), EXIT_FAILURE);
   try {
     {
-      std::vector<unsigned long> numSequence;
-      size_t comparisonCount = 0;
+      std::vector<IndexedValue> numSequence;
       std::vector<IndexedValue> sorted;
+      size_t comparisonCount = 0;
+      std::clock_t start;
+      std::clock_t end;
 
-      numSequence = mylib::parse_argv_to_vector(argc, argv);
+      numSequence = mylib::vectorToIndexedVector(
+          mylib::parseArgvToVector(argc, argv)
+          );
       std::cout << "Before:\t";
-      PmergeMe::display_array(numSequence);
+      PmergeMe::displayArray(mylib::indexedVectorToVector(numSequence));
       std::cout << std::endl;
-      sorted = PmergeMe::fordJohnsonAlgorithm(mylib::vector_to_indexed_vector(numSequence), comparisonCount);
-      std::cout << SUCESCOLOR << "Number of comparisons: " << comparisonCount << RESETCOLOR << std::endl;
+      start = std::clock();
+      sorted = PmergeMe::fordJohnsonAlgorithm(
+          numSequence,
+          comparisonCount
+          );
+      end = std::clock();
       std::cout << "After:\t";
-      PmergeMe::display_array(mylib::indexedVectorToVector(sorted));
+      PmergeMe::displayArray(mylib::indexedVectorToVector(sorted));
       std::cout << std::endl;
+      std::cout << "Number of comparisons: " << comparisonCount << std::endl;
+      std::cout << "Time to process a range of\t"
+                << mylib::indexedVectorToVector(numSequence).size()
+                << " elements with std::vector :\t"
+                << std::fixed << std::setprecision(5)
+                << mylib::calcProcessTime(start, end) << "us" << std::endl;
+    }
+  mylib::draw_terminal_line();
+    {
+      std::list<IndexedValue> numSequence;
+      std::list<IndexedValue> sorted;
+      size_t comparisonCount = 0;
+      std::clock_t start;
+      std::clock_t end;
+
+      numSequence = mylib::listToIndexedList(
+          mylib::parseArgvToList(argc, argv)
+          );
+      std::cout << "Before:\t";
+      PmergeMe::displayArray(mylib::indexedListToList(numSequence));
+      std::cout << std::endl;
+      start = std::clock();
+      sorted = PmergeMe::fordJohnsonAlgorithm(
+          numSequence,
+          comparisonCount
+          );
+      end = std::clock();
+      std::cout << "After:\t";
+      PmergeMe::displayArray(mylib::indexedListToList(sorted));
+      std::cout << std::endl;
+      std::cout << "Number of comparisons: " << comparisonCount << std::endl;
+      std::cout << "Time to process a range of\t"
+                << mylib::indexedListToList(numSequence).size()
+                << " elements with std::vector :\t"
+                << std::fixed << std::setprecision(5)
+                << mylib::calcProcessTime(start, end) << "us" << std::endl;
     }
   } catch (const std::exception& e) {
     std::cerr << ERRORCOLOR << e.what() << RESETCOLOR << std::endl;
@@ -161,3 +282,4 @@ int main(int argc, char** argv) {
   }
   return (mylib::draw_terminal_line(), EXIT_SUCCESS);
 }
+
