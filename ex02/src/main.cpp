@@ -206,9 +206,12 @@ namespace mylib {
       array.push_back(it->value);
     return (array);
   }
-  
-  static double calcProcessTime(std::clock_t start, std::clock_t end) {
-    return (1000000.0 * (end - start) / CLOCKS_PER_SEC);
+
+  double getTimeSec(void) {
+      struct timeval tv;
+      gettimeofday(&tv, NULL);
+
+      return (tv.tv_sec + tv.tv_usec / 1e6);
   }
 }
 
@@ -221,60 +224,66 @@ int main(int argc, char** argv) {
       std::vector<IndexedValue> numSequence;
       std::vector<IndexedValue> sorted;
       size_t comparisonCount = 0;
-      std::clock_t start;
-      std::clock_t end;
+      double start;
+      double end;
 
+      start = mylib::getTimeSec();
       numSequence = mylib::vectorToIndexedVector(
           mylib::parseArgvToVector(argc, argv)
           );
+      if (mylib::indexedVectorToVector(numSequence).size() > 3000) {
+        return (
+            std::cerr << ERRORCOLOR << "Error: too many elements."
+                  << RESETCOLOR << std::endl,
+                  EXIT_FAILURE
+            );
+      }
       std::cout << "Before:\t";
       PmergeMe::displayArray(mylib::indexedVectorToVector(numSequence));
       std::cout << std::endl;
-      start = std::clock();
       sorted = PmergeMe::fordJohnsonAlgorithm(
           numSequence,
           comparisonCount
           );
-      end = std::clock();
+      end = mylib::getTimeSec(); 
       std::cout << "After:\t";
       PmergeMe::displayArray(mylib::indexedVectorToVector(sorted));
       std::cout << std::endl;
-      std::cout << "Number of comparisons: " << comparisonCount << std::endl;
+      // std::cout << "Number of comparisons: " << comparisonCount << std::endl;
       std::cout << "Time to process a range of\t"
                 << mylib::indexedVectorToVector(numSequence).size()
-                << " elements with std::vector :\t"
+                << " elements with std::vector:\t"
                 << std::fixed << std::setprecision(5)
-                << mylib::calcProcessTime(start, end) << "us" << std::endl;
+                << end - start << "us" << std::endl;
     }
-  mylib::draw_terminal_line();
     {
       std::list<IndexedValue> numSequence;
       std::list<IndexedValue> sorted;
       size_t comparisonCount = 0;
-      std::clock_t start;
-      std::clock_t end;
+      double start;
+      double end;
 
+      start = mylib::getTimeSec();
       numSequence = mylib::listToIndexedList(
           mylib::parseArgvToList(argc, argv)
           );
-      std::cout << "Before:\t";
-      PmergeMe::displayArray(mylib::indexedListToList(numSequence));
-      std::cout << std::endl;
-      start = std::clock();
+      // std::cout << "Before:\t";
+      // PmergeMe::displayArray(mylib::indexedListToList(numSequence));
+      // std::cout << std::endl;
       sorted = PmergeMe::fordJohnsonAlgorithm(
           numSequence,
           comparisonCount
           );
-      end = std::clock();
-      std::cout << "After:\t";
-      PmergeMe::displayArray(mylib::indexedListToList(sorted));
-      std::cout << std::endl;
-      std::cout << "Number of comparisons: " << comparisonCount << std::endl;
+      end = mylib::getTimeSec(); 
+      // std::cout << "After:\t";
+      // PmergeMe::displayArray(mylib::indexedListToList(sorted));
+      // std::cout << std::endl;
+      // std::cout << "Number of comparisons: " << comparisonCount << std::endl;
       std::cout << "Time to process a range of\t"
                 << mylib::indexedListToList(numSequence).size()
-                << " elements with std::vector :\t"
+                << " elements with std::list:\t"
                 << std::fixed << std::setprecision(5)
-                << mylib::calcProcessTime(start, end) << "us" << std::endl;
+                << end - start << "us" << std::endl;
     }
   } catch (const std::exception& e) {
     std::cerr << ERRORCOLOR << e.what() << RESETCOLOR << std::endl;

@@ -18,7 +18,7 @@
 #define RESETCOLOR "\033[0m"
 
 #include <sys/ioctl.h>
-#include <ctime>
+#include <sys/time.h>
 #include <unistd.h>
 #include <cstdlib>
 #include <cerrno>
