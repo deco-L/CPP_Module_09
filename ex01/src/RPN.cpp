@@ -40,6 +40,10 @@ void RPN::push(const double& nbr) {
   return (this->_data.push(nbr));
 }
 
+size_t RPN::size(void) {
+  return (this->_data.size());
+}
+
 void RPN::pop(void) {
   if (!this->_data.empty())
     this->_data.pop();
@@ -56,49 +60,30 @@ const double& RPN::top(void) const {
   return (this->_data.top());
 }
 
-bool RPN::calcu(const std::string& opt, const double& nbr) {
+bool RPN::calcu(const std::string& opt) {
   double tmp;
 
+  if (this->size() >= 2) {
+    tmp = this->top();
+    this->pop();
+  } else
+    return (false);
   switch (opt.c_str()[0])
   {
   case '+':
-    this->pop();
-    if (!this->empty())
-      tmp = this->top();
-    else
-      return (false);
-    this->pop();
-    this->push(tmp + nbr);
+    *this + tmp;
     break ;
 
   case '-':
-    this->pop();
-    if (!this->empty())
-      tmp = this->top();
-    else
-      return (false);
-    this->pop();
-    this->push(tmp - nbr);
+    *this - tmp;
     break ;
 
   case '*':
-    this->pop();
-    if (!this->empty())
-      tmp = this->top();
-    else
-      return (false);
-    this->pop();
-    this->push(tmp * nbr);
+    *this * tmp;
     break ;
 
   case '/':
-    this->pop();
-    if (!this->empty())
-      tmp = this->top();
-    else
-      return (false);
-    this->pop();
-    this->push(tmp / nbr);
+    *this / tmp;
     break ;
 
   default:
@@ -108,18 +93,39 @@ bool RPN::calcu(const std::string& opt, const double& nbr) {
   return (true);
 }
 
-double RPN::operator+(const double& nbr) const {
-  return (this->top() * nbr);
+double RPN::operator+(const double& nbr) {
+  double result;
+
+  result = this->top() + nbr;
+  this->pop();
+  this->push(result);
+  return (result);
 }
 
-double RPN::operator-(const double& nbr) const {
-  return (this->top() - nbr);
+double RPN::operator-(const double& nbr) {
+  double result;
+
+  result = this->top() - nbr;
+  this->pop();
+  this->push(result);
+  return (result);
 }
 
-double RPN::operator*(const double& nbr) const {
-  return (this->top() * nbr);
+double RPN::operator*(const double& nbr) {
+  double result = this->top();
+
+  result = this->top() * nbr;
+  this->pop();
+  this->push(result);
+  return (result);
 }
 
-double RPN::operator/(const double& nbr) const {
-  return (this->top() / nbr);
+double RPN::operator/(const double& nbr) {
+  double result;
+
+  result = this->top() / nbr;
+  this->pop();
+  this->push(result);
+  return (result);
 }
+

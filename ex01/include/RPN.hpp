@@ -33,14 +33,15 @@ public:
   ~RPN();
 
   void push(const double& nbr);
+  size_t size(void);
   void pop(void);
   bool empty(void);
   const double& top(void) const;
-  bool calcu(const std::string& opt, const double& nbr);
-  double operator+(const double& nbr) const;
-  double operator-(const double& nbr) const;
-  double operator*(const double& nbr) const;
-  double operator/(const double& nbr) const;
+  bool calcu(const std::string& opt);
+  double operator+(const double& nbr);
+  double operator-(const double& nbr);
+  double operator*(const double& nbr);
+  double operator/(const double& nbr);
 };
 
 #endif

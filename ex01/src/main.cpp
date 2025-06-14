@@ -27,6 +27,10 @@ int main(int argc, char** argv) {
     return (EXIT_FAILURE);
   }
   std::istringstream lineStream(argv[1]);
+  if (!*argv[1]) {
+    std::cerr << ERRORCOLOR << "Error: Invalid arguments." << RESETCOLOR << std::endl;
+    return (EXIT_FAILURE);
+  }
   while (std::getline(lineStream, element, ' ')) {
     std::istringstream strToD(element);
     strToD >> tmp;
@@ -34,13 +38,18 @@ int main(int argc, char** argv) {
       std::cerr << ERRORCOLOR << "Error: invalid argument." << RESETCOLOR << std::endl;
       return (EXIT_FAILURE);
     } else if (strToD.fail() && gudgeOperator(element)) {
-      if (!rpn.calcu(element, rpn.top())) {
+      if (!rpn.calcu(element)) {
         std::cerr << ERRORCOLOR << "Error: invalid argument." << RESETCOLOR << std::endl;
         return (EXIT_FAILURE);
       }
     } else
       rpn.push(tmp);
   }
+  if (rpn.size() > 1) {
+    std::cerr << ERRORCOLOR << "Error: Invalid arguments." << RESETCOLOR << std::endl;
+    return (EXIT_FAILURE);
+  }
   std::cout << SUCESCOLOR << "Result: " << RESETCOLOR << rpn.top() << std::endl;
   return (EXIT_SUCCESS);
 }
+

@@ -81,10 +81,6 @@ public:
     for (typename T::const_iterator it = array.begin(); it != array.end(); ++it) {
       if (it != array.begin())
         std::cout << ' ';
-//      if (array.size() > 5 && index == 4) {
-//        std::cout << "[...]";
-//        return ;
-//      }
       std::cout << *it;
       index++;
     }
