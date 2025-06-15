@@ -108,7 +108,7 @@ std::vector<std::pair<IndexedValue, IndexedValue> > PmergeMe::makePairs(const st
 std::list<std::pair<IndexedValue, IndexedValue> > PmergeMe::makePairs(const std::list<IndexedValue>& indexedArray) {
   std::list<std::pair<IndexedValue, IndexedValue> > pairArray;
 
-  for (std::list<IndexedValue>::const_iterator it = indexedArray.begin(); it != indexedArray.end(); it++) {
+  for (std::list<IndexedValue>::const_iterator it = indexedArray.begin(); it != indexedArray.end();) {
     std::list<IndexedValue>::const_iterator nextIt = it;
 
     nextIt++;
@@ -122,7 +122,7 @@ std::list<std::pair<IndexedValue, IndexedValue> > PmergeMe::makePairs(const std:
       pairArray.push_back(element);
       return (pairArray);
     }
-    it++;
+    std::advance(it, 2);
   }
   return (pairArray);
 }

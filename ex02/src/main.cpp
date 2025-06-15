@@ -249,7 +249,7 @@ int main(int argc, char** argv) {
       std::cout << "After:\t";
       PmergeMe::displayArray(mylib::indexedVectorToVector(sorted));
       std::cout << std::endl;
-      // std::cout << "Number of comparisons: " << comparisonCount << std::endl;
+      std::cout << "Number of comparisons: " << comparisonCount << std::endl;
       std::cout << "Time to process a range of\t"
                 << mylib::indexedVectorToVector(numSequence).size()
                 << " elements with std::vector:\t"
@@ -278,7 +278,7 @@ int main(int argc, char** argv) {
       // std::cout << "After:\t";
       // PmergeMe::displayArray(mylib::indexedListToList(sorted));
       // std::cout << std::endl;
-      // std::cout << "Number of comparisons: " << comparisonCount << std::endl;
+      std::cout << "Number of comparisons: " << comparisonCount << std::endl;
       std::cout << "Time to process a range of\t"
                 << mylib::indexedListToList(numSequence).size()
                 << " elements with std::list:\t"
