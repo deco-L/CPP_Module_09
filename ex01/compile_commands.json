@@ -1,0 +1,40 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-fsanitize=address",
+      "-I",
+      "./include/",
+      "-c",
+      "-o",
+      "objs/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/deco/Program/cpp/CPP_Module_09/ex01",
+    "file": "/home/deco/Program/cpp/CPP_Module_09/ex01/src/main.cpp",
+    "output": "/home/deco/Program/cpp/CPP_Module_09/ex01/objs/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-fsanitize=address",
+      "-I",
+      "./include/",
+      "-c",
+      "-o",
+      "objs/RPN.o",
+      "src/RPN.cpp"
+    ],
+    "directory": "/home/deco/Program/cpp/CPP_Module_09/ex01",
+    "file": "/home/deco/Program/cpp/CPP_Module_09/ex01/src/RPN.cpp",
+    "output": "/home/deco/Program/cpp/CPP_Module_09/ex01/objs/RPN.o"
+  }
+]
